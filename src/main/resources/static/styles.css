@@ -1,0 +1,11 @@
+#header{
+    text-align: center;
+}
+#content{
+    margin-left: 40%;
+}
+
+#ingredients {
+    display: inline-block;
+    width: 25%;
+}

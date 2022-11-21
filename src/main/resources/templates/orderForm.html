@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Spring Burger</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body>
+<h1>Order Form</h1>
+<form method="post" th:action="@{/order}" th:object="${order}">
+    Send my Burger <span th:text="${designBurger.getName()}"></span> to: <br>
+    <label for="name">
+        Name:
+        <input id="name" type="text" th:field="${order.name}">
+    </label>
+
+    <label for="street">
+        Street:
+        <input id="street" type="text" th:field="${order.street}">
+    </label>
+
+    <label for="city">
+        City:
+        <input id="city" type="text" th:field="${order.city}">
+    </label>
+
+    <button type="submit">Submit the Order</button>
+</form>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Spring Burger</title>
+    <!--@ Symbol for a Path-->
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body>
+<div id="header">
+    <h1>Spring Burger - Design your own Burger</h1>
+    <img th:src="@{/images/gzuz.jpg}" width="400px">
+</div>
+<div id="content">
+    <form method="post" th:action="@{/design}" th:object="${designBurger}">
+        <div class="columns">
+            <div th:each="key : ${ingredientMap.keySet()}">
+                <div class="head1">Choose your
+                    <span th:text="${key}">TYPE</span>
+                </div>
+                    <div th:each="ingredient : ${ingredientMap.get(key)}">
+                        <label>
+                            <input type="checkbox" th:name="ingredients" th:value="${ingredient.getName()}"
+                                   th:text="${ingredient.getName()}">
+                        </label>
+                    </div>
+            </div>
+        </div>
+        <label for="name">Give your burger a name:</label>
+        <input type="text" id="name" th:field="${designBurger.name}">
+        <!--<input type="text" id="name" th:field="*{name}">-->
+        <button type="submit">Submit your Burger</button>
+    </form>
+</div>
+</body>
+</html>
