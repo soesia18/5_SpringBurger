@@ -5,7 +5,15 @@
     margin-left: 40%;
 }
 
-#ingredients {
+.ingredients {
     display: inline-block;
     width: 25%;
+}
+
+.columns {
+    display: flex;
+}
+
+.validationErrors {
+    color: red;
 }

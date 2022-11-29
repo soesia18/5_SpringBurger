@@ -5,10 +5,16 @@ import at.kaindorf.springburger.Beans.Order;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
+
+import javax.validation.Valid;
+import java.util.HashMap;
 
 /**
  * <h3>Created by IntelliJ IDEA.</h3><br>
@@ -25,20 +31,35 @@ public class OrderController {
     // ToDo: implement POST-Mapping to process order
     // ToDo: Mapping of order input values to order-object
 
+    @ModelAttribute
+    public void setAttribute(Model model) {
+        if (!model.containsAttribute("validationErrors")) {
+            model.addAttribute("validationErrors", new HashMap<>());
+        }
+    }
+
     @GetMapping
-    public String showOrderForm (Model model, @ModelAttribute("designBurger") Burger burger) {
+    public String showOrderForm (Model model,
+                                 @ModelAttribute("designBurger") Burger burger) {
         log.debug("GET request to /order: ");
         log.debug("Burger: " + burger);
+
         model.addAttribute("order", new Order());
         model.addAttribute("designBurger", burger);
+
         return "orderForm";
     }
 
     @PostMapping
-    public String processOrder (@ModelAttribute(name = "order") Order order,
-                                @ModelAttribute(name = "designBurger") Burger burger) {
+    public RedirectView processOrder (RedirectAttributes attributes,
+                                @Valid @ModelAttribute(name = "order") Order order,
+                                BindingResult errors) {
         log.debug("POST request to /order: " + order);
-        log.debug("Burger: " + burger);
-        return "order";
+
+        if (errors.hasErrors()) {
+            log.debug("Burger error: " + errors);
+        }
+        attributes.addFlashAttribute("validationErrors", SpringBurgerController.getErrorMessages(errors));
+        return new RedirectView("/order");
     }
 }

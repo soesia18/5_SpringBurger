@@ -13,6 +13,9 @@
 </div>
 <div id="content">
     <form method="post" th:action="@{/design}" th:object="${designBurger}">
+        <span class="validationErrors" th:if="${validationErrors.get('ingredients')}" th:text="${validationErrors.get('ingredients')}">
+            ingredients Error
+        </span>
         <div class="columns">
             <div th:each="key : ${ingredientMap.keySet()}">
                 <div class="head1">Choose your
@@ -26,6 +29,9 @@
                     </div>
             </div>
         </div>
+        <span class="validationErrors" th:if="${validationErrors.get('name')}" th:text="${validationErrors.get('name')}">
+            name Error
+        </span>
         <label for="name">Give your burger a name:</label>
         <input type="text" id="name" th:field="${designBurger.name}">
         <!--<input type="text" id="name" th:field="*{name}">-->

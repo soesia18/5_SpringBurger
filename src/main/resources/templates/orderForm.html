@@ -9,16 +9,29 @@
 <h1>Order Form</h1>
 <form method="post" th:action="@{/order}" th:object="${order}">
     Send my Burger <span th:text="${designBurger.getName()}"></span> to: <br>
+
+    <b th:text="${validationErrors.keySet()}"></b>
+
+    <span class="validationErrors" th:if="${validationErrors.get('name')}" th:text="${validationErrors.get('name')}">
+            name Error
+    </span>
     <label for="name">
         Name:
         <input id="name" type="text" th:field="${order.name}">
     </label>
 
+    <span class="validationErrors" th:if="${validationErrors.get('street')}"
+          th:text="${validationErrors.get('street')}">
+            street Error
+        </span>
     <label for="street">
         Street:
         <input id="street" type="text" th:field="${order.street}">
     </label>
 
+    <span class="validationErrors" th:if="${validationErrors.get('city')}" th:text="${validationErrors.get('city')}">
+            city Error
+        </span>
     <label for="city">
         City:
         <input id="city" type="text" th:field="${order.city}">
