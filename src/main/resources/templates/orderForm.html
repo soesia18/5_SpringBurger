@@ -8,7 +8,8 @@
 <body>
 <h1>Order Form</h1>
 <form method="post" th:action="@{/order}" th:object="${order}">
-    Send my Burger <span th:text="${designBurger.getName()}"></span> to: <br>
+    Send my Burger <span th:text="${designBurger.getName()}"></span> with
+    <span th:text="${designBurger.ingredients}"> </span>to: <br>
 
     <b th:text="${validationErrors.keySet()}"></b>
 

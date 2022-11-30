@@ -23,7 +23,7 @@
                 </div>
                     <div th:each="ingredient : ${ingredientMap.get(key)}">
                         <label>
-                            <input type="checkbox" th:name="ingredients" th:value="${ingredient.getName()}"
+                            <input type="checkbox" th:name="ingredients" th:value="${ingredient.id}"
                                    th:text="${ingredient.getName()}">
                         </label>
                     </div>

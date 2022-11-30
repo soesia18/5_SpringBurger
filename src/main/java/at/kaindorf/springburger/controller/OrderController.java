@@ -6,10 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -52,14 +49,14 @@ public class OrderController {
 
     @PostMapping
     public RedirectView processOrder (RedirectAttributes attributes,
-                                @Valid @ModelAttribute(name = "order") Order order,
-                                BindingResult errors) {
+                                      @Valid @ModelAttribute(name = "order") Order order,
+                                      BindingResult errors) {
         log.debug("POST request to /order: " + order);
 
         if (errors.hasErrors()) {
-            log.debug("Burger error: " + errors);
+            log.debug("Order error: " + errors);
+            attributes.addFlashAttribute("validationErrors", SpringBurgerController.getErrorMessages(errors));
         }
-        attributes.addFlashAttribute("validationErrors", SpringBurgerController.getErrorMessages(errors));
         return new RedirectView("/order");
     }
 }
