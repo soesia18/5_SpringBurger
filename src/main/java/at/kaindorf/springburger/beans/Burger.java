@@ -1,4 +1,4 @@
-package at.kaindorf.springburger.Beans;
+package at.kaindorf.springburger.beans;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -28,6 +29,10 @@ public class Burger {
 
     @ManyToOne
     private Order order;
+
+    public String printIngredientsPretty () {
+        return ingredients.stream().map(Ingredient::getName).collect(Collectors.joining(", "));
+    }
 
     public void addIngredient (Ingredient ingredient) {
         ingredients.add(ingredient);

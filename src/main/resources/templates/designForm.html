@@ -4,38 +4,53 @@
     <meta charset="UTF-8">
     <title>Spring Burger</title>
     <!--@ Symbol for a Path-->
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+
     <link rel="stylesheet" th:href="@{/styles.css}">
+
 </head>
 <body>
 <div id="header">
     <h1>Spring Burger - Design your own Burger</h1>
-    <img th:src="@{/images/gzuz.jpg}" width="400px">
+    <img th:src="@{/images/gzuz.jpg}" width="400px" alt="Burger">
 </div>
 <div id="content">
     <form method="post" th:action="@{/design}" th:object="${designBurger}">
-        <span class="validationErrors" th:if="${validationErrors.get('ingredients')}" th:text="${validationErrors.get('ingredients')}">
-            ingredients Error
-        </span>
-        <div class="columns">
-            <div th:each="key : ${ingredientMap.keySet()}">
-                <div class="head1">Choose your
-                    <span th:text="${key}">TYPE</span>
+        <div class="columns d-flex justify-content-around">
+            <div class="ingredientTopic" th:each="key : ${ingredientMap.keySet()}">
+                <h3>Choose your
+                    <span class="" th:text="${key}">TYPE</span>
+                </h3>
+                <div th:each="ingredient : ${ingredientMap.get(key)}">
+                    <label>
+                        <!--th:value="${ingredient.id}" works because there exists
+                        the IngredientRepository which maps a String (ingredient.id)
+                        to an Ingredient-object-->
+                        <input type="checkbox" th:name="ingredients" th:value="${ingredient.id}"
+                               th:text="${ingredient.getName()}">
+                    </label>
                 </div>
-                    <div th:each="ingredient : ${ingredientMap.get(key)}">
-                        <label>
-                            <input type="checkbox" th:name="ingredients" th:value="${ingredient.id}"
-                                   th:text="${ingredient.getName()}">
-                        </label>
-                    </div>
             </div>
         </div>
-        <span class="validationErrors" th:if="${validationErrors.get('name')}" th:text="${validationErrors.get('name')}">
-            name Error
+        <span class="validationErrors" th:if="${#fields.hasErrors('ingredients')}"
+              th:errors="${designBurger.ingredients}">
+            Ingredient Error
         </span>
-        <label for="name">Give your burger a name:</label>
-        <input type="text" id="name" th:field="${designBurger.name}">
-        <!--<input type="text" id="name" th:field="*{name}">-->
-        <button type="submit">Submit your Burger</button>
+        <span class="validationErrors" th:if="${#fields.hasErrors('name')}"
+              th:errors="${designBurger.name}">
+            Name Error
+        </span>
+        <div class="d-flex justify-content-around">
+            <label for="name">Give your burger a name:</label>
+            <input type="text" id="name" th:field="${designBurger.name}">
+            <!--<input type="text" id="name" th:field="*{name}">-->
+            <button type="submit">Submit your Burger</button>
+        </div>
     </form>
 </div>
 </body>

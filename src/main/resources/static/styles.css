@@ -2,7 +2,11 @@
     text-align: center;
 }
 #content{
-    margin-left: 40%;
+
+}
+
+#orderHeader {
+    text-align: center;
 }
 
 .ingredients {
@@ -16,4 +20,12 @@
 
 .validationErrors {
     color: red;
+    text-align: center;
+    display: table;
+    margin: 0 auto;
+}
+
+.ingredientTopic {
+    margin-top: 50px;
+    margin-bottom: 50px;
 }

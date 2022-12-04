@@ -1,14 +1,11 @@
 package at.kaindorf.springburger.controller;
 
-import at.kaindorf.springburger.Beans.Burger;
-import at.kaindorf.springburger.Beans.Ingredient;
-import at.kaindorf.springburger.Beans.Order;
+import at.kaindorf.springburger.beans.Burger;
+import at.kaindorf.springburger.beans.Ingredient;
 import at.kaindorf.springburger.data.BurgerRepository;
 import at.kaindorf.springburger.data.IngredientRepository;
 import at.kaindorf.springburger.data.OrderRepository;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -74,21 +71,12 @@ public class SpringBurgerController {
     //every time if any request Mapping is done [get, post, ...]
     @ModelAttribute
     public void setAttribute(Model model) {
-
-        /*if (ingredients == null) {
-
-            ingredients = ingredientRepository.findAll();
-
-            for (Ingredient.Type type : Ingredient.Type.values()) {
-                ingredientMap.put(type.toString().toLowerCase(), filterByType(type));
-            }
-        }*/
-
         model.addAttribute("ingredientMap", ingredientMap);
+    }
 
-        if (!model.containsAttribute("validationErrors")) {
-            model.addAttribute("validationErrors", new HashMap<>());
-        }
+    @ModelAttribute("designBurger")
+    public Burger burger () {
+        return new Burger();
     }
 
     @GetMapping
@@ -96,45 +84,38 @@ public class SpringBurgerController {
         //model.addAttribute("ingredients",ingredientMap);
 
         log.info("GET request to /design");
-        model.addAttribute("designBurger", new Burger());
+        //model.addAttribute("designBurger", new Burger());
 
         //Name of the html file
         return "designForm";
     }
 
+
     @PostMapping
     public RedirectView processDesignBurger(RedirectAttributes attributes,
                                             @Valid @ModelAttribute("designBurger") Burger burger,
-                                            BindingResult errors/*,
-                                            @RequestParam(name = "ingredients") String[] ids*/) {
+                                            BindingResult errors) {
         log.debug("POST request to /design: " + burger);
+
+        attributes.addFlashAttribute("designBurger", burger);
 
         if (errors.hasErrors()) {
             log.debug("Burger error: " + errors);
 
-            System.out.println(errors.getModel());
-            /*
-            Map<String, String> errorMap = getErrorMessages(errors);
-            System.out.println(errorMap);
-            */
+            attributes.
+                    addFlashAttribute("org.springframework.validation.BindingResult.designBurger", errors);
 
-            attributes.addFlashAttribute("validationErrors", getErrorMessages(errors));
+            // Don't use this way, use the build in way
+            // attributes.addFlashAttribute("validationErrors", getErrorMessages(errors));
 
-            // "name" -> "Name must be at least 7 characters long"
-            // "ingredients" -> "Ingredients must have at least 3 Items"
+            // ToDo: "name" -> "Name must be at least 7 characters long"
+            // ToDo: "ingredients" -> "Ingredients must have at least 3 Items"
 
             return new RedirectView("/design");
         }
 
         burgerRepository.save(burger);
 
-        /*Arrays.stream(ids).forEach(s -> {
-            burger.addIngredient(ingredientRepository.findById(s).get());
-        });
-
-        Arrays.stream(ids).forEach(log::debug);*/
-
-        attributes.addFlashAttribute("designBurger", burger);
         //return "redirect:/order";
         return new RedirectView("/order");
     }

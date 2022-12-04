@@ -1,6 +1,6 @@
 package at.kaindorf.springburger.data;
 
-import at.kaindorf.springburger.Beans.Ingredient;
+import at.kaindorf.springburger.beans.Ingredient;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

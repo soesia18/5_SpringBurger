@@ -1,4 +1,4 @@
-package at.kaindorf.springburger.Beans;
+package at.kaindorf.springburger.beans;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,7 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
-import javax.validation.constraints.NotNull;
 
 
 @Data
@@ -22,6 +21,8 @@ public class Ingredient {
 
     @Enumerated(EnumType.STRING)
     private Type type;
+
+
 
 
     public static enum Type{

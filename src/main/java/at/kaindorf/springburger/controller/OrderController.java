@@ -1,7 +1,7 @@
 package at.kaindorf.springburger.controller;
 
-import at.kaindorf.springburger.Beans.Burger;
-import at.kaindorf.springburger.Beans.Order;
+import at.kaindorf.springburger.beans.Burger;
+import at.kaindorf.springburger.beans.Order;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -41,8 +41,14 @@ public class OrderController {
         log.debug("GET request to /order: ");
         log.debug("Burger: " + burger);
 
+        // Workaround for validation, should not be necessary when order is a sessionAttribute
+        Object errors = model.getAttribute("org.springframework.validation.BindingResult.order");
+
         model.addAttribute("order", new Order());
         model.addAttribute("designBurger", burger);
+
+        // Workaround for validation, should not be necessary when order is a sessionAttribute
+        model.addAttribute("org.springframework.validation.BindingResult.order", errors);
 
         return "orderForm";
     }
@@ -53,10 +59,15 @@ public class OrderController {
                                       BindingResult errors) {
         log.debug("POST request to /order: " + order);
 
+        attributes.addFlashAttribute("order", order);
+
         if (errors.hasErrors()) {
             log.debug("Order error: " + errors);
-            attributes.addFlashAttribute("validationErrors", SpringBurgerController.getErrorMessages(errors));
+
+            attributes.
+                    addFlashAttribute("org.springframework.validation.BindingResult.order", errors);
         }
+
         return new RedirectView("/order");
     }
 }

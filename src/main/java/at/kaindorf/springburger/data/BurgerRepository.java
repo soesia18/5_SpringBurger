@@ -1,9 +1,7 @@
 package at.kaindorf.springburger.data;
 
-import at.kaindorf.springburger.Beans.Burger;
+import at.kaindorf.springburger.beans.Burger;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import javax.swing.*;
 
 /**
  * <h3>Created by IntelliJ IDEA.</h3><br>

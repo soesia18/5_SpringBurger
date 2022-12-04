@@ -1,6 +1,6 @@
 package at.kaindorf.springburger.data;
 
-import at.kaindorf.springburger.Beans.Ingredient;
+import at.kaindorf.springburger.beans.Ingredient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,8 +18,11 @@ import javax.annotation.PostConstruct;
 @Component
 @Slf4j
 public class DbInit {
-    @Autowired
-    private IngredientRepository ingredientRepository;
+    private final IngredientRepository ingredientRepository;
+
+    public DbInit(IngredientRepository ingredientRepository) {
+        this.ingredientRepository = ingredientRepository;
+    }
 
     @PostConstruct
     private void initializeIngredients() {
