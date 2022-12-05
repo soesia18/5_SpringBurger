@@ -10,7 +10,9 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequestMapping("/design")
 @DependsOn("dbInit")
+@SessionAttributes({"designBurger"})
 public class SpringBurgerController {
     private final IngredientRepository ingredientRepository;
     private final BurgerRepository burgerRepository;
@@ -92,18 +95,16 @@ public class SpringBurgerController {
 
 
     @PostMapping
-    public RedirectView processDesignBurger(RedirectAttributes attributes,
-                                            @Valid @ModelAttribute("designBurger") Burger burger,
-                                            BindingResult errors) {
+    public ModelAndView processDesignBurger(@Valid @ModelAttribute("designBurger") Burger burger,
+                                            Errors errors) {
         log.debug("POST request to /design: " + burger);
 
-        attributes.addFlashAttribute("designBurger", burger);
 
         if (errors.hasErrors()) {
             log.debug("Burger error: " + errors);
 
-            attributes.
-                    addFlashAttribute("org.springframework.validation.BindingResult.designBurger", errors);
+            /*attributes.
+                    addFlashAttribute("org.springframework.validation.BindingResult.designBurger", errors);*/
 
             // Don't use this way, use the build in way
             // attributes.addFlashAttribute("validationErrors", getErrorMessages(errors));
@@ -111,13 +112,13 @@ public class SpringBurgerController {
             // ToDo: "name" -> "Name must be at least 7 characters long"
             // ToDo: "ingredients" -> "Ingredients must have at least 3 Items"
 
-            return new RedirectView("/design");
+            return new ModelAndView("designForm");
         }
 
         burgerRepository.save(burger);
 
         //return "redirect:/order";
-        return new RedirectView("/order");
+        return new ModelAndView("redirect:/order");
     }
 
     private static List<Ingredient> filterByType(Ingredient.Type type) {

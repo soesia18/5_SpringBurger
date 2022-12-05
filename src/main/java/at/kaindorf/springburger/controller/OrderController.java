@@ -2,11 +2,15 @@ package at.kaindorf.springburger.controller;
 
 import at.kaindorf.springburger.beans.Burger;
 import at.kaindorf.springburger.beans.Order;
+import at.kaindorf.springburger.data.BurgerRepository;
+import at.kaindorf.springburger.data.OrderRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -24,9 +28,18 @@ import java.util.HashMap;
 @Controller
 @Slf4j
 @RequestMapping("/order")
+@SessionAttributes({"designBurger", "order"})
 public class OrderController {
     // ToDo: implement POST-Mapping to process order
     // ToDo: Mapping of order input values to order-object
+
+    private final OrderRepository orderRepository;
+    private final BurgerRepository burgerRepository;
+
+    public OrderController(OrderRepository orderRepository, BurgerRepository burgerRepository) {
+        this.orderRepository = orderRepository;
+        this.burgerRepository = burgerRepository;
+    }
 
     @ModelAttribute
     public void setAttribute(Model model) {
@@ -37,7 +50,7 @@ public class OrderController {
 
     @GetMapping
     public String showOrderForm (Model model,
-                                 @ModelAttribute("designBurger") Burger burger) {
+                                 @SessionAttribute("designBurger") Burger burger) {
         log.debug("GET request to /order: ");
         log.debug("Burger: " + burger);
 
@@ -54,20 +67,20 @@ public class OrderController {
     }
 
     @PostMapping
-    public RedirectView processOrder (RedirectAttributes attributes,
-                                      @Valid @ModelAttribute(name = "order") Order order,
-                                      BindingResult errors) {
+    public ModelAndView performOrder(@Valid @ModelAttribute(name = "order") Order order,
+                                     @SessionAttribute("designBurger") Burger burger,
+                                     Errors errors) {
         log.debug("POST request to /order: " + order);
-
-        attributes.addFlashAttribute("order", order);
 
         if (errors.hasErrors()) {
             log.debug("Order error: " + errors);
-
-            attributes.
-                    addFlashAttribute("org.springframework.validation.BindingResult.order", errors);
+            return new ModelAndView("orderForm");
         }
 
-        return new RedirectView("/order");
+        order.addBurger(burger);
+        orderRepository.save(order);
+        burgerRepository.save(burger);
+
+        return new ModelAndView("redirect:/design");
     }
 }
