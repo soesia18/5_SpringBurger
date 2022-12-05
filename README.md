@@ -1,6 +1,6 @@
 # 5_SpringBurger
 
-###required
+### required
 
 spring.datasource.url=jdbc:postgresql://localhost:5432/burgerdb
 spring.datasource.username=postgres
